@@ -31,16 +31,16 @@ app.post('/api/relato', async (req, res) => {
       });
     }
 
-    // Configuração das credenciais de e-mail
+    // Configuração das credenciais
     const emailUser = 'vascbianca485@gmail.com';
     const emailPass = 'hfgvcuxrrzjcsmet';
     const emailDestino = 'elcabullying@gmail.com';
 
-    // Configuração do transportador Nodemailer
+    // Configuração original com Porta 465 e SSL (segure: true) que funcionava[cite: 4]
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
+      port: 465,
+      secure: true, 
       auth: {
         user: emailUser,
         pass: emailPass
@@ -101,13 +101,13 @@ app.post('/api/relato', async (req, res) => {
     console.error('❌ Erro no envio do e-mail:', error);
     return res.status(500).json({ 
       success: false, 
-      mensagem: 'Erro interno ao enviar o e-mail.', 
-      detalhes: error.message || 'Erro desconhecido' 
+      mensagem: 'Erro ao enviar e-mail.', 
+      detalhes: error.message 
     });
   }
 });
 
-// Inicia o servidor localmente se não estiver no ambiente Vercel
+// Inicialização local
 if (!process.env.VERCEL) {
   app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
 }
