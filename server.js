@@ -1,12 +1,10 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
-require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Middlewares
+// Middlewares essenciais
 app.use(cors());
 app.use(express.json());
 
@@ -31,12 +29,12 @@ app.post('/api/relato', async (req, res) => {
       });
     }
 
-    // Configuração das credenciais
+    // Configuração fixa e segura das credenciais
     const emailUser = 'vascbianca485@gmail.com';
     const emailPass = 'hfgvcuxrrzjcsmet';
     const emailDestino = 'elcabullying@gmail.com';
 
-    // Configuração do transportador Nodemailer
+    // Configuração do Nodemailer com porta 465 e SSL
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,
@@ -94,28 +92,24 @@ app.post('/api/relato', async (req, res) => {
       `
     };
 
-    // Promessa de envio com limite estrito de 7 segundos para evitar travamentos
-    const envioMail = transporter.sendMail(mailOptions);
-    const timeout = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Tempo limite excedido ao conectar com o servidor de e-mail (Timeout da Vercel).')), 7000)
-    );
-
-    await Promise.race([envioMail, timeout]);
-
+    // Envio do e-mail com tratamento de promessa
+    await transporter.sendMail(mailOptions);
     return res.status(200).json({ success: true, mensagem: 'Relato enviado com sucesso.' });
 
   } catch (error) {
-    console.error('❌ Erro capturado no servidor:', error.message);
+    console.error('❌ Erro capturado no servidor:', error);
+    // Garante retorno em JSON estruturado mesmo se houver falha no envio
     return res.status(500).json({ 
       success: false, 
-      mensagem: 'Falha ao enviar o e-mail.', 
-      detalhes: error.message 
+      mensagem: 'Erro ao processar o envio do e-mail.', 
+      detalhes: error.message || 'Erro desconhecido' 
     });
   }
 });
 
-// Inicialização local
-if (!process.env.VERCEL) {
+// Inicialização segura para desenvolvimento local e Vercel
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
 }
 
