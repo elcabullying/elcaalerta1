@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elça Alerta - Notícias e Ciência</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: #F0F6FF; 
+            color: #0F172A;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* CABEÇALHO PADRÃO DO PROJETO */
+        header {
+            background-color: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #1EA7FD; 
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: 40px;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        .logo-texto h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0052B4;
+            line-height: 1.1;
+            margin: 0;
+        }
+
+        .logo-texto span {
+            font-size: 0.72rem;
+            color: #475569;
+            font-weight: 500;
+            display: block;
+            margin-top: 2px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #475569;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding-bottom: 6px;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #0052B4;
+            font-weight: 700;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #FFB703; 
+            border-radius: 2px;
+        }
+
+        /* CONTEÚDO PRINCIPAL */
+        .main-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex: 1;
+            width: 100%;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .page-header h1 {
+            font-size: 2.2rem;
+            color: #0052B4;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .page-header p {
+            color: #475569;
+            font-size: 1.05rem;
+        }
+
+        /* CONTROLE DE ABAS (TABS) */
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .tab-btn {
+            background: #FFFFFF;
+            border: 2px solid #BAE6FD;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #0052B4;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 82, 180, 0.05);
+        }
+
+        .tab-btn:hover {
+            background: #E0F2FE;
+            border-color: #1EA7FD;
+        }
+
+        .tab-btn.active {
+            background: #0052B4;
+            color: #FFFFFF;
+            border-color: #0052B4;
+            box-shadow: 0 6px 20px rgba(0, 82, 180, 0.25);
+        }
+
+        /* SEÇÕES DE CONTEÚDO */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* GRID DE VÍDEOS COM IMAGENS */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .video-card {
+            background: #FFFFFF;
+            border: 2.5px solid #BAE6FD;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 82, 180, 0.05);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            border-color: #1EA7FD;
+            box-shadow: 0 12px 25px rgba(0, 82, 180, 0.12);
+        }
+
+        .video-thumb-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            display: block;
+        }
+
+        .video-thumb-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .video-card:hover .video-thumb-container img {
+            transform: scale(1.05);
+        }
+
+        /* Efeito de Play por cima da imagem */
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .play-icon {
+            width: 54px;
+            height: 54px;
+            background: #E60039;
+            color: #FFFFFF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            padding-left: 3px;
+            box-shadow: 0 4px 15px rgba(230, 0, 57, 0.4);
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .video-thumb-container:hover .play-overlay {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .video-thumb-container:hover .play-icon {
+            transform: scale(1.15);
+            background: #B3002D;
+        }
+
+        .card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .card-tag {
+            align-self: flex-start;
+            background: #E0F2FE;
+            color: #007A78;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            border: 1px solid #7DD3FC;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0052B4;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .card-desc {
+            font-size: 0.88rem;
+            color: #475569;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .btn-watch {
+            margin-top: auto;
+            align-self: flex-start;
+            color: #0052B4;
+            font-weight: 700;
+            font-size: 0.88rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+
+        .btn-watch:hover {
+            color: #003C85;
+            text-decoration: underline;
+        }
+
+        /* LISTA DE ARTIGOS CIENTÍFICOS */
+        .articles-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .article-card {
+            background: #FFFFFF;
+            border: 2.5px solid #BAE6FD;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 20px rgba(0, 82, 180, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .article-card:hover {
+            transform: translateY(-3px);
+            border-color: #1EA7FD;
+            box-shadow: 0 12px 25px rgba(0, 82, 180, 0.1);
+        }
+
+        .article-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .pdf-icon {
+            background: #FFF5F5;
+            color: #E60039;
+            border: 1.5px solid #E60039;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .article-details h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0052B4;
+            margin-bottom: 6px;
+        }
+
+        .article-details p {
+            font-size: 0.88rem;
+            color: #475569;
+            line-height: 1.4;
+        }
+
+        .btn-download {
+            background-color: #FFFFFF;
+            border: 2px solid #1EA7FD;
+            color: #0052B4;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-download:hover {
+            background-color: #E0F2FE;
+        }
+
+        /* BOTÃO FLUTUANTE ESC */
+        .floating-esc-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #E60039;
+            color: #FFFFFF;
+            border: 2px solid #FFFFFF;
+            padding: 15px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(230, 0, 57, 0.4);
+            z-index: 999;
+            transition: transform 0.2s, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .floating-esc-btn:hover {
+            background-color: #B3002D;
+            transform: scale(1.05);
+        }
+
+        /* RODAPÉ */
+        footer {
+            background-color: #FFFFFF;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+            color: #64748B;
+            border-top: 1px solid #E2E8F0;
+            margin-top: auto;
+        }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 1100px) {
+            header {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+            nav {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .article-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .btn-download {
+                width: 100%;
+                justify-content: center;
+            }
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 12px 10px;
+            }
+            nav {
+                gap: 10px;
+            }
+            .nav-link {
+                font-size: 0.82rem;
+            }
+            .tabs-container {
+                flex-direction: column;
+            }
+            .tab-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .floating-esc-btn {
+                bottom: 15px;
+                right: 15px;
+                padding: 10px 16px;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BOTÃO FLUTUANTE ESC -->
+    <button class="floating-esc-btn" onclick="exitUrgent()" aria-label="Sair rapidamente da página">
+        ⚠️ SAIR RÁPIDO (ESC)
+    </button>
+
+    <!-- CABEÇALHO -->
+    <header>
+        <div class="logo-area">
+            <img src="./logo.png" alt="Logo Voz Segura" class="logo-img">
+            <div class="logo-texto">
+                <h2>Elça Alerta</h2>
+                <span>Juntos contra o bullying</span>
+            </div>
+        </div>
+        
+        <nav>
+            <a href="index.html" class="nav-link">Início</a>
+            <a href="meditacao.html" class="nav-link">Meditação</a>
+            <a href="autoavaliacao.html" class="nav-link">Autoavaliação (PHQ-9)</a>
+            <a href="relato.html" class="nav-link">Relatar caso</a>
+            <a href="noticias.html" class="nav-link active">Notícias e Ciência</a>
+            <a href="denuncia.html" class="nav-link">Canais de denúncia</a>
+        </nav>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-container">
+        
+        <div class="page-header">
+            <h1>Notícias e Conhecimento Científico</h1>
+            <p>Acesse materiais educativos, reportagens e artigos de pesquisa para se informar e conscientizar.</p>
+        </div>
+
+        <!-- ABAS DE NAVEGAÇÃO -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="openTab('videos', this)">
+                🎬 Vídeos Informativos
+            </button>
+            <button class="tab-btn" onclick="openTab('artigos', this)">
+                📄 Documentos informativos
+            </button>
+        </div>
+
+        <!-- ABA 1: VÍDEOS COM IMAGENS -->
+        <div id="videos" class="tab-content active">
+            <div class="video-grid">
+                
+                <!-- Vídeo 1: img1.png -->
+                <div class="video-card">
+                    <a href="https://www.youtube.com/watch?v=qEJsczB2hkA&t=5s" target="_blank" class="video-thumb-container">
+                        <img src="./img1.png" alt="Casos de bullying no Brasil - Drauzio Varella">
+                        <div class="play-overlay">
+                            <div class="play-icon">▶</div>
+                        </div>
+                    </a>
+                    <div class="card-body">
+                        <span class="card-tag">Episódio 1</span>
+                        <h3 class="card-title">Conversando com o psicólogo</h3>
+                        <p class="card-desc">Nesta conversa, os alunos da Escola Elça Carvalho da Fonseca entrevistam o psicólogo Jean Ferreira, abordando a importância de procurar um profissional da saúde em situações de bullying.</p>
+                        <a href="https://www.youtube.com/watch?v=qEJsczB2hkA&t=5s" target="_blank" class="btn-watch">▶ Assistir no YouTube</a>
+                    </div>
+                </div>
+
+                <!-- Vídeo 2: img2.png -->
+                <div class="video-card">
+                    <a href="https://www.youtube.com/watch?v=phccGlr5voQ&t=4s" target="_blank" class="video-thumb-container">
+                        <img src="./img2.png" alt="Conheça os 8 Tipos de Bullying Escolar">
+                        <div class="play-overlay">
+                            <div class="play-icon">▶</div>
+                        </div>
+                    </a>
+                    <div class="card-body">
+                        <span class="card-tag">Episódio 2</span>
+                        <h3 class="card-title">Conversando com o gestor</h3>
+                        <p class="card-desc">Nesta conversa, os alunos da Escola Elça Carvalho da Fonseca entrevistam o diretor Leandro Ferreira, abordando como a escola lida com as situações de bullying que chegam na instituição.</p>
+                        <a href="https://www.youtube.com/watch?v=phccGlr5voQ&t=4s" target="_blank" class="btn-watch">▶ Assistir no YouTube</a>
+                    </div>
+                </div>
+
+                <!-- Vídeo 3: img3.png -->
+                <div class="video-card">
+                    <a href="https://www.youtube.com/watch?v=LjRXE_uDVjE" target="_blank" class="video-thumb-container">
+                        <img src="./img3.png" alt="Somos Todos Diferentes – Respeito às Diferenças">
+                        <div class="play-overlay">
+                            <div class="play-icon">▶</div>
+                        </div>
+                    </a>
+                    <div class="card-body">
+                        <span class="card-tag">Episódio 3</span>
+                        <h3 class="card-title">Conversando com a coordenação</h3>
+                        <p class="card-desc">Nesta conversa, os alunos da Escola Elça Carvalho da Fonseca entrevistam a coordenadora pedagógica Rosângela, trazendo reflexões sobre o que é o bullying.</p>
+                        <a href="https://www.youtube.com/watch?v=LjRXE_uDVjE" target="_blank" class="btn-watch">▶ Assistir no YouTube</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ABA 2: ARTIGOS CIENTÍFICOS (PDF) -->
+        <div id="artigos" class="tab-content">
+            <div class="articles-list">
+                
+                <!-- Artigo 1 -->
+                <div class="article-card">
+                    <div class="article-info">
+                        <div class="pdf-icon">📄</div>
+                        <div class="article-details">
+                            <h3>O que é Bullying?</h3>
+                            <p>Este material retrata o conceito de Bulllying e os tipos de agressões existentes.</p>
+                        </div>
+                    </div>
+                    <a href="artigo1.pdf" target="_blank" class="btn-download">
+                        📥 Abrir PDF
+                    </a>
+                </div>
+
+                <!-- Artigo 2 -->
+                <div class="article-card">
+                    <div class="article-info">
+                        <div class="pdf-icon">📄</div>
+                        <div class="article-details">
+                            <h3>O que fazer?</h3>
+                            <p>Este material orienta as vítimias de Bulying a saírem dessa situação.</p>
+                        </div>
+                    </div>
+                    <a href="artigo2.pdf" target="_blank" class="btn-download">
+                        📥 Abrir PDF
+                    </a>
+                </div>
+
+                <!-- Artigo 3 -->
+                <div class="article-card">
+                    <div class="article-info">
+                        <div class="pdf-icon">📄</div>
+                        <div class="article-details">
+                            <h3>Cartilha para pais e responsáveis</h3>
+                            <p>Nesta cartilha encontram-se orientações acerca de como abordar as vítimas do bullying.</p>
+                        </div>
+                    </div>
+                    <a href="artigo3.pdf" target="_blank" class="btn-download">
+                        📥 Abrir PDF
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer>
+        &copy; 2026 Elça Alerta &bull; Projeto desenvolvido pela Escola Elça Carvalho da Fonseca. Todos os direitos reservados.
+    </footer>
+
+    <!-- SCRIPT DAS ABAS E BOTÃO DE EMERGÊNCIA -->
+    <script>
+        function openTab(tabId, btn) {
+            // Oculta todos os conteúdos de abas
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Remove o estado ativo de todos os botões
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(button => button.classList.remove('active'));
+
+            // Ativa a aba e o botão selecionados
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function exitUrgent() {
+            window.location.href = 'https://www.google.com';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                exitUrgent();
+            }
+        });
+    </script>
+</body>
+</html>
