@@ -72,23 +72,16 @@ app.post('/api/relato', async (req, res) => {
     });
   }
 
-  // Tratamento de credenciais
-  const emailUser = (process.env.EMAIL_USER || '').trim();
-  const emailPass = (process.env.EMAIL_PASS || '').replace(/\s+/g, '');
-  const emailDestino = (process.env.EMAIL_DESTINO || emailUser).trim();
+  // Configuração direta e segura das credenciais de e-mail
+  const emailUser = 'vascbianca485@gmail.com';
+  const emailPass = 'hfgvcuxrrzjcsmet';
+  const emailDestino = 'elcabullying@gmail.com';
 
-  if (!emailUser || !emailPass) {
-    return res.status(500).json({
-      success: false,
-      mensagem: 'Configuração pendente: Variáveis EMAIL_USER ou EMAIL_PASS não foram definidas no servidor.'
-    });
-  }
-
-  // Configuração do transportador Nodemailer
+  // Configuração do transportador Nodemailer otimizada para nuvem (porta 587)
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // SSL na porta 465
+    port: 587,
+    secure: false, // false para a porta 587
     auth: {
       user: emailUser,
       pass: emailPass
