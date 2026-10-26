@@ -545,6 +545,7 @@
 
     <!-- SCRIPT DO BOTÃO DE EMERGÊNCIA -->
 <!-- SCRIPT DO BOTÃO DE EMERGÊNCIA E ENVIO -->
+  <!-- SCRIPT DO BOTÃO DE EMERGÊNCIA E ENVIO SEM RECARREGAR A PÁGINA -->
     <script>
         function exitUrgent() {
             window.location.href = 'https://www.google.com';
@@ -569,23 +570,29 @@
         const tipoOptions = document.querySelectorAll('.tipo-option');
         const checkTodas = document.getElementById('checkTodas');
 
-        checkTodas.addEventListener('change', function() {
-            tipoOptions.forEach(cb => {
-                cb.checked = this.checked;
+        if (checkTodas) {
+            checkTodas.addEventListener('change', function() {
+                tipoOptions.forEach(cb => {
+                    cb.checked = this.checked;
+                });
             });
-        });
+        }
 
         tipoOptions.forEach(cb => {
             cb.addEventListener('change', function() {
                 const totalOptions = tipoOptions.length;
                 const checkedOptions = document.querySelectorAll('.tipo-option:checked').length;
-                checkTodas.checked = (totalOptions === checkedOptions);
+                if (checkTodas) {
+                    checkTodas.checked = (totalOptions === checkedOptions);
+                }
             });
         });
 
-        // ENVIO DO FORMULÁRIO COM CAPTURA DE ERRO BRUTO
+        // ENVIO DO FORMULÁRIO (IMPEDE A RECARGA DA PÁGINA)
         form.addEventListener('submit', async (e) => {
+            // Trava o comportamento padrão do formulário de recarregar a página
             e.preventDefault();
+            e.stopPropagation();
 
             const selectedTipos = Array.from(tipoOptions)
                 .filter(cb => cb.checked)
@@ -594,7 +601,8 @@
             if (selectedTipos.length === 0) {
                 feedback.className = 'error';
                 feedback.textContent = '❌ Por favor, selecione pelo menos um tipo de ocorrência/bullying.';
-                return;
+                feedback.style.display = 'block';
+                return false;
             }
 
             btnEnviar.disabled = true;
@@ -610,46 +618,46 @@
             try {
                 const response = await fetch('/api/relato', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify(dados)
                 });
 
-                // Lê o texto puro da resposta do servidor
                 const textoResposta = await response.text();
                 
                 let resultado;
                 try {
                     resultado = JSON.parse(textoResposta);
                 } catch (jsonError) {
-                   let resultado;
-                try {
-                    resultado = JSON.parse(textoResposta);
-                } catch (jsonError) {
-                    // Exibe a resposta inteira que o servidor enviou na tela
-                    throw new Error(`Erro bruto completo do servidor: [ ${textoResposta} ]`);
-                }
-                }
+                    throw new Error(`Resposta bruta do servidor: ${textoResposta}`);
                 }
 
                 if (response.ok && resultado.success) {
                     feedback.className = 'success';
                     feedback.textContent = '✅ Relato enviado com sucesso! Obrigado pela sua contribuição.';
+                    feedback.style.display = 'block';
                     form.reset();
-                    checkTodas.checked = false;
+                    if (checkTodas) checkTodas.checked = false;
                 } else {
                     feedback.className = 'error';
                     feedback.textContent = `❌ ${resultado.mensagem || 'Erro ao enviar.'}`;
                     if (resultado.detalhes) {
                         feedback.textContent += ` Detalhes: ${resultado.detalhes}`;
                     }
+                    feedback.style.display = 'block';
                 }
             } catch (error) {
                 feedback.className = 'error';
-                feedback.textContent = `❌ ${error.message}`;
+                feedback.textContent = `❌ Erro capturado: ${error.message}`;
+                feedback.style.display = 'block';
             } finally {
                 btnEnviar.disabled = false;
                 btnEnviar.textContent = 'Enviar Relato com Segurança';
             }
+
+            return false;
         });
     </script>
 </body>
