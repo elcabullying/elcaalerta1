@@ -7,14 +7,14 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Definir o caminho para o frontend (pasta pai "site")
-const caminhoFrontend = path.join(__dirname, '..');
+// Definir o caminho para o frontend (diretório atual do projeto)
+const caminhoFrontend = __dirname;
 
 // Middlewares
 app.use(cors());
 app.use(express.json());
 
-// Servir arquivos estáticos buscando na pasta do frontend
+// Servir arquivos estáticos da pasta do projeto
 app.use(express.static(caminhoFrontend));
 
 // Rota principal (raiz do site)
@@ -52,7 +52,7 @@ app.get('/:pagina.html', (req, res) => {
   });
 });
 
-// Rota POST para receber o relato do formulário
+// Rota POST para receber o relato do formulário e enviar por e-mail
 app.post('/api/relato', async (req, res) => {
   const { 
     nome, 
@@ -72,7 +72,7 @@ app.post('/api/relato', async (req, res) => {
     });
   }
 
-  // Tratamento de credenciais (remove espaços acidentais)
+  // Tratamento de credenciais
   const emailUser = (process.env.EMAIL_USER || '').trim();
   const emailPass = (process.env.EMAIL_PASS || '').replace(/\s+/g, '');
   const emailDestino = (process.env.EMAIL_DESTINO || emailUser).trim();
@@ -88,13 +88,13 @@ app.post('/api/relato', async (req, res) => {
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
-    secure: true, // Conexão SSL na porta 465
+    secure: true, // SSL na porta 465
     auth: {
       user: emailUser,
       pass: emailPass
     },
     tls: {
-      rejectUnauthorized: false // Ignora restrições de certificado SSL da rede local ou antivírus
+      rejectUnauthorized: false
     }
   });
 
@@ -151,7 +151,7 @@ app.post('/api/relato', async (req, res) => {
   }
 });
 
-// Fallback de rota para servir o index.html caso acesse rotas do frontend
+// Fallback de rota para servir o index.html em rotas do frontend
 app.get('*', (req, res, next) => {
   if (req.url.includes('.')) {
     return next();
@@ -159,6 +159,7 @@ app.get('*', (req, res, next) => {
   res.sendFile(path.join(caminhoFrontend, 'index.html'));
 });
 
+// Inicia o servidor localmente se não estiver no ambiente Vercel
 if (!process.env.VERCEL) {
   app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
 }
