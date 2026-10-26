@@ -583,7 +583,7 @@
             });
         });
 
-        // ENVIO DO FORMULÁRIO COM TRATAMENTO SEGURO DE RESPOSTA
+        // ENVIO DO FORMULÁRIO COM CAPTURA DE ERRO BRUTO
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -614,14 +614,16 @@
                     body: JSON.stringify(dados)
                 });
 
-                // Verifica se a resposta do servidor veio em formato JSON válido
-                const contentType = response.headers.get("content-type");
-                if (!contentType || !contentType.includes("application/json")) {
-                    const textoErro = await response.text();
-                    throw new Error(`O servidor retornou um erro inesperado (HTML/Texto): ${textoErro.substring(0, 120)}`);
+                // Lê o texto puro da resposta do servidor
+                const textoResposta = await response.text();
+                
+                let resultado;
+                try {
+                    resultado = JSON.parse(textoResposta);
+                } catch (jsonError) {
+                    // Se não for JSON válido, joga o texto HTML bruto na tela para sabermos o erro exato
+                    throw new Error(`O servidor retornou HTML/Texto (Erro bruto): ${textoResposta.substring(0, 200)}`);
                 }
-
-                const resultado = await response.json();
 
                 if (response.ok && resultado.success) {
                     feedback.className = 'success';
@@ -637,7 +639,7 @@
                 }
             } catch (error) {
                 feedback.className = 'error';
-                feedback.textContent = `❌ Erro de conexão ou servidor: ${error.message}`;
+                feedback.textContent = `❌ ${error.message}`;
             } finally {
                 btnEnviar.disabled = false;
                 btnEnviar.textContent = 'Enviar Relato com Segurança';
