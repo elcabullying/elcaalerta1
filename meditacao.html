@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elça Alerta - Meditação e Descompressão</title>
+    <!-- ÍCONES PHOSPHOR -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #F0F6FF, #E0F2FE, #FEF3C7);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #0F172A;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        header {
+            background-color: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #1EA7FD; 
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo-texto h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #0052B4;
+            line-height: 1.1;
+        }
+
+        .logo-texto span {
+            font-size: 0.8rem;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .hamburger-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: #0F172A;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #475569;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding-bottom: 6px;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #0052B4;
+            font-weight: 700;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #FFB703; 
+            border-radius: 2px;
+        }
+
+        .meditation-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
+        }
+
+        .intro-text h1 {
+            font-size: 2.4rem;
+            color: #0052B4;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .intro-text p {
+            color: #475569;
+            font-size: 1.1rem;
+        }
+
+        .breathing-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .balloon-container {
+            width: 260px;
+            height: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .balloon {
+            width: 130px;
+            height: 130px;
+            background: radial-gradient(circle, #38BDF8 0%, #0052B4 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(0, 82, 180, 0.35), inset 0 -10px 20px rgba(0,0,0,0.15);
+            animation: breatheAnimation 8s infinite ease-in-out;
+        }
+
+        .breathing-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #0052B4;
+            min-height: 35px;
+            text-shadow: 0 2px 4px rgba(0, 82, 180, 0.1);
+        }
+
+        @keyframes breatheAnimation {
+            0%, 100% { 
+                transform: scale(1); 
+                box-shadow: 0 0 20px rgba(0, 82, 180, 0.3);
+            }
+            45% { 
+                transform: scale(1.75); 
+                box-shadow: 0 0 50px rgba(30, 167, 253, 0.6);
+            }
+            55% { 
+                transform: scale(1.75); 
+                box-shadow: 0 0 50px rgba(30, 167, 253, 0.6);
+            }
+            90% { 
+                transform: scale(1); 
+                box-shadow: 0 0 20px rgba(0, 82, 180, 0.3);
+            }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid #BAE6FD;
+            border-radius: 24px;
+            padding: 35px;
+            width: 100%;
+            max-width: 650px;
+            box-shadow: 0 10px 30px rgba(0, 82, 180, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            color: #0052B4;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-title i {
+            font-size: 1.4rem;
+        }
+
+        .card-subtitle {
+            color: #475569;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        #display-phrase {
+            font-size: 1.25rem;
+            color: #0F172A;
+            font-style: italic;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .btn-draw {
+            background: linear-gradient(135deg, #1EA7FD 0%, #0052B4 100%);
+            color: #FFFFFF;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0, 82, 180, 0.25);
+            transition: all 0.2s;
+        }
+
+        .btn-draw:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 82, 180, 0.35);
+        }
+
+        .btn-draw:active {
+            transform: translateY(0);
+        }
+
+        .sounds-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            width: 100%;
+        }
+
+        .sound-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #BAE6FD;
+            border-radius: 18px;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            color: #475569;
+        }
+
+        .sound-card i {
+            font-size: 2.2rem;
+            color: #0052B4;
+            transition: transform 0.2s;
+        }
+
+        .sound-card span {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .sound-card:hover {
+            background: #FFFFFF;
+            border-color: #1EA7FD;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 82, 180, 0.12);
+            color: #0052B4;
+        }
+
+        .sound-card:hover i {
+            transform: scale(1.1);
+        }
+
+        .sound-card.playing {
+            background-color: #E0F2FE;
+            border-color: #0052B4;
+            color: #0052B4;
+            box-shadow: 0 0 20px rgba(0, 82, 180, 0.2);
+            animation: pulseSound 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseSound {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        footer {
+            background-color: #FFFFFF;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+            color: #64748B;
+            border-top: 1px solid #E2E8F0;
+            margin-top: auto;
+        }
+
+        .floating-esc-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #E60039;
+            color: #FFFFFF;
+            border: 2px solid #FFFFFF;
+            padding: 15px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(230, 0, 57, 0.4);
+            z-index: 999;
+            transition: transform 0.2s, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .floating-esc-btn:hover {
+            background-color: #B3002D;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 1024px) {
+            .meditation-container {
+                padding: 20px 15px;
+                gap: 30px;
+            }
+            .glass-card {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 820px) {
+            .hamburger-btn {
+                display: block;
+            }
+
+            nav {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: #F0F6FF;
+                padding: 20px;
+                border-bottom: 2px solid #BAE6FD;
+                box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+                gap: 16px;
+            }
+
+            nav.active {
+                display: flex;
+            }
+
+            .nav-link.active::after {
+                display: none;
+            }
+
+            .intro-text h1 {
+                font-size: 2rem;
+            }
+
+            .intro-text p {
+                font-size: 1rem;
+            }
+
+            .balloon-container {
+                width: 220px;
+                height: 220px;
+            }
+
+            .balloon {
+                width: 110px;
+                height: 110px;
+            }
+
+            .breathing-text {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .sounds-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .meditation-container {
+                margin: 20px auto;
+                gap: 25px;
+            }
+
+            .glass-card {
+                padding: 20px 15px;
+                border-radius: 18px;
+            }
+
+            #display-phrase {
+                font-size: 1.05rem;
+                min-height: 60px;
+            }
+
+            .btn-draw {
+                padding: 12px 28px;
+                font-size: 0.9rem;
+            }
+
+            .floating-esc-btn {
+                bottom: 15px;
+                right: 15px;
+                padding: 10px 16px;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="floating-esc-btn" onclick="exitUrgent()" aria-label="Sair rapidamente da página">
+        ⚠️ SAIR RÁPIDO (ESC)
+    </button>
+
+    <header>
+        <div class="logo-area">
+            <img src="./logo.png" alt="Logo Voz Segura" class="logo-img">
+            <div class="logo-texto">
+                <h2>Elça Alerta</h2>
+                <span>Juntos contra o bullying</span>
+            </div>
+        </div>
+
+        <button class="hamburger-btn" onclick="toggleMenu()" aria-label="Abrir Menu">
+            ☰
+        </button>
+
+        <nav id="nav-menu">
+            <a href="index.html" class="nav-link">Início</a>
+            <a href="meditacao.html" class="nav-link active">Meditação</a>
+            <a href="autoavaliacao.html" class="nav-link">Autoavaliação (PHQ-9)</a>
+            <a href="relato.html" class="nav-link">Relatar caso</a>
+            <a href="noticias.html" class="nav-link">Notícias e Ciência</a>
+            <a href="denuncia.html" class="nav-link">Canais de denúncia</a>
+        </nav>
+    </header>
+
+    <main class="meditation-container">
+        
+        <div class="intro-text">
+            <h1>Espaço de Descompressão</h1>
+            <p>Respire fundo e tire um momento calmo para você.</p>
+        </div>
+
+        <div class="breathing-section">
+            <div class="balloon-container">
+                <div class="balloon" id="breathing-balloon"></div>
+            </div>
+            <div class="breathing-text" id="instruction-label">Respire devagar...</div>
+        </div>
+
+        <div class="glass-card">
+            <div class="card-title">
+                <i class="ph ph-sparkle"></i> Pensamento do Momento
+            </div>
+            <div id="display-phrase">Clique para tirar um bilhete de apoio feito para você.</div>
+            <button class="btn-draw" onclick="drawPhrase()">✨ Tirar Bilhete</button>
+        </div>
+
+        <!-- MÓDULO 3: SONS RELAXANTES -->
+        <div class="glass-card">
+            <div class="card-title">
+                <i class="ph ph-headphones"></i> Sons Relaxantes para Foco e Paz
+            </div>
+            <div class="card-subtitle">Clique em um ambiente sonoro para iniciar a reprodução de áudio relaxante.</div>
+
+            <div class="sounds-grid">
+                <div class="sound-card" data-sound="mar">
+                    <i class="ph ph-coffee"></i>
+                    <span>Cafeteria Acolhedora</span>
+                </div>
+                <div class="sound-card" data-sound="chuva">
+                    <i class="ph ph-waves"></i>
+                    <span>Ondas do Mar</span>
+                </div>
+                <div class="sound-card" data-sound="cafeteria">
+                    <i class="ph ph-cloud-rain"></i>
+                    <span>Chuva Suave</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        &copy; 2026 Elça Alerta &bull; Projeto desenvolvido pela Escola Elça Carvalho da Fonseca. Todos os direitos reservados.
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const nav = document.getElementById('nav-menu');
+            nav.classList.toggle('active');
+        }
+
+        const phrases = [
+            "Você é muito maior do que qualquer palavra que tente te diminuir.",
+            "Tudo bem não estar forte o tempo todo. Respeite o seu momento.",
+            "A sua voz importa, e a sua existência faz diferença no mundo.",
+            "O que você está sentindo agora vai passar. Fique firme.",
+            "Não enfrente isso sozinho. Existem pessoas que se importam com você.",
+            "Você é inteligente, capaz e merece ser respeitado(a) por quem você é.",
+            "Nenhum ato de crueldade alheia define o seu valor real.",
+            "Respire fundo. Você está em um espaço seguro agora.",
+            "Sua história ainda tem muitos capítulos felizes para serem escritos.",
+            "Você é forte por ter chegado até aqui. Orgulhe-se disso.",
+            "Ninguém tem o direito de roubar a sua paz ou a sua alegria.",
+            "Focar em si mesmo é a melhor forma de recuperar o seu poder.",
+            "O bullying diz muito mais sobre as fraquezas do outro do que sobre você.",
+            "Sua sensibilidade é uma força, não uma fraqueza.",
+            "Permita-se fechar os olhos e deixar os problemas do lado de fora um pouco.",
+            "Você é uma pessoa única e preciosa. Lembre-se sempre disso.",
+            "Dias melhores estão a caminho. A tempestade não dura para sempre.",
+            "Proteja a sua mente. Você merece gentileza e autocuidado.",
+            "Seja paciente com você mesmo. Você está fazendo o melhor que pode.",
+            "Você tem o direito de ocupar o seu espaço na escola e no mundo.",
+            "Não tenha medo de pedir ajuda. Isso é um sinal de coragem.",
+            "Mantenha a cabeça erguida: a maldade dos outros não define quem você é.",
+            "Cada respiração profunda te traz de volta para o seu centro de calma.",
+            "Você é perfeitamente capaz de superar esse momento difícil.",
+            "Olhe para dentro e reconheça a força linda que existe em você."
+        ];
+
+        function drawPhrase() {
+            const display = document.getElementById('display-phrase');
+            display.style.opacity = 0;
+            
+            setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * phrases.length);
+                display.innerText = phrases[randomIndex];
+                display.style.opacity = 1;
+                display.style.transition = 'opacity 0.4s ease';
+            }, 200);
+        }
+
+        const instructionLabel = document.getElementById('instruction-label');
+        function updateBreathingText() {
+            instructionLabel.innerText = "Puxe o ar pelo nariz... (Inspira)";
+            setTimeout(() => {
+                instructionLabel.innerText = "Segure o ar um instante...";
+            }, 3600); 
+            setTimeout(() => {
+                instructionLabel.innerText = "Solte o ar pela boca devagar... (Expira)";
+            }, 4400); 
+        }
+        
+        updateBreathingText();
+        setInterval(updateBreathingText, 8000);
+
+        // MOTOR DE ÁUDIO SINTETIZADO COM WEB AUDIO API (ALTAMENTE CONFIÁVEL)
+        let audioCtx = null;
+        let activeNodes = [];
+        let activeSoundType = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function stopCurrentSound() {
+            activeNodes.forEach(node => {
+                try {
+                    if (node.stop) node.stop();
+                    if (node.disconnect) node.disconnect();
+                } catch (e) {}
+            });
+            activeNodes = [];
+            activeSoundType = null;
+        }
+
+        function createPinkNoiseBuffer() {
+            const bufferSize = audioCtx.sampleRate * 2;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = buffer.getChannelData(0);
+            let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+            for (let i = 0; i < bufferSize; i++) {
+                let white = Math.random() * 2 - 1;
+                b0 = 0.99886 * b0 + white * 0.0555179;
+                b1 = 0.99332 * b1 + white * 0.0750759;
+                b2 = 0.96900 * b2 + white * 0.1538520;
+                b3 = 0.86650 * b3 + white * 0.3104856;
+                b4 = 0.55000 * b4 + white * 0.5329522;
+                b5 = -0.7616 * b5 - white * 0.0168980;
+                output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+                output[i] *= 0.11;
+                b6 = white * 0.115926;
+            }
+            return buffer;
+        }
+
+        function playSound(soundType) {
+            initAudio();
+            stopCurrentSound();
+
+            const buffer = createPinkNoiseBuffer();
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            noise.loop = true;
+
+            const filter = audioCtx.createBiquadFilter();
+            const gainNode = audioCtx.createGain();
+
+            if (soundType === 'chuva') {
+                filter.type = 'lowpass';
+                filter.frequency.value = 1000;
+                gainNode.gain.value = 0.3;
+
+                noise.connect(filter);
+                filter.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                noise.start();
+
+                activeNodes.push(noise, filter, gainNode);
+            } 
+            else if (soundType === 'mar') {
+                filter.type = 'lowpass';
+                filter.frequency.value = 400;
+
+                const lfo = audioCtx.createOscillator();
+                lfo.frequency.value = 0.12; 
+                const lfoGain = audioCtx.createGain();
+                lfoGain.gain.value = 350;
+
+                lfo.connect(lfoGain);
+                lfoGain.connect(filter.frequency);
+
+                gainNode.gain.value = 0.4;
+
+                noise.connect(filter);
+                filter.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                noise.start();
+                lfo.start();
+
+                activeNodes.push(noise, lfo, lfoGain, filter, gainNode);
+            } 
+            else if (soundType === 'cafeteria') {
+                filter.type = 'bandpass';
+                filter.frequency.value = 800;
+                filter.Q.value = 1.0;
+                gainNode.gain.value = 0.25;
+
+                noise.connect(filter);
+                filter.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                noise.start();
+
+                activeNodes.push(noise, filter, gainNode);
+            }
+
+            activeSoundType = soundType;
+        }
+
+        // VINCULAÇÃO DOS BOTÕES COM A ENGINE DE ÁUDIO
+        const soundCards = document.querySelectorAll('.sound-card');
+
+        soundCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const soundType = card.getAttribute('data-sound');
+
+                if (activeSoundType === soundType) {
+                    stopCurrentSound();
+                    card.classList.remove('playing');
+                } else {
+                    soundCards.forEach(c => c.classList.remove('playing'));
+                    playSound(soundType);
+                    card.classList.add('playing');
+                }
+            });
+        });
+
+        function exitUrgent() {
+            stopCurrentSound();
+            window.location.href = 'https://www.google.com';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                exitUrgent();
+            }
+        });
+    </script>
+</body>
+</html>
