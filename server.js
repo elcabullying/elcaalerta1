@@ -36,7 +36,7 @@ app.post('/api/relato', async (req, res) => {
     const emailPass = 'hfgvcuxrrzjcsmet';
     const emailDestino = 'elcabullying@gmail.com';
 
-    // Configuração original com Porta 465 e SSL (segure: true) que funcionava[cite: 4]
+    // Configuração do transportador Nodemailer
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,
@@ -94,14 +94,21 @@ app.post('/api/relato', async (req, res) => {
       `
     };
 
-    await transporter.sendMail(mailOptions);
+    // Promessa de envio com limite estrito de 7 segundos para evitar travamentos
+    const envioMail = transporter.sendMail(mailOptions);
+    const timeout = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Tempo limite excedido ao conectar com o servidor de e-mail (Timeout da Vercel).')), 7000)
+    );
+
+    await Promise.race([envioMail, timeout]);
+
     return res.status(200).json({ success: true, mensagem: 'Relato enviado com sucesso.' });
 
   } catch (error) {
-    console.error('❌ Erro no envio do e-mail:', error);
+    console.error('❌ Erro capturado no servidor:', error.message);
     return res.status(500).json({ 
       success: false, 
-      mensagem: 'Erro ao enviar e-mail.', 
+      mensagem: 'Falha ao enviar o e-mail.', 
       detalhes: error.message 
     });
   }
