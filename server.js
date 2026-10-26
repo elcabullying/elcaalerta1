@@ -1,56 +1,14 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
-const path = require('path');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Definir o caminho para o frontend
-const caminhoFrontend = __dirname;
-
 // Middlewares
 app.use(cors());
 app.use(express.json());
-
-// Servir arquivos estáticos da pasta do projeto
-app.use(express.static(caminhoFrontend));
-
-// Rota principal (raiz do site)
-app.get('/', (req, res) => {
-  res.sendFile(path.join(caminhoFrontend, 'index.html'));
-});
-
-// Rota dinâmica para entregar QUALQUER imagem .png
-app.get('/:imagem.png', (req, res) => {
-  const imagem = req.params.imagem;
-  res.sendFile(path.join(caminhoFrontend, `${imagem}.png`), (err) => {
-    if (err) {
-      res.status(404).send('Imagem não encontrada');
-    }
-  });
-});
-
-// Rota dinâmica para entregar QUALQUER arquivo .pdf
-app.get('/:documento.pdf', (req, res) => {
-  const documento = req.params.documento;
-  res.sendFile(path.join(caminhoFrontend, `${documento}.pdf`), (err) => {
-    if (err) {
-      res.status(404).send('Documento PDF não encontrado');
-    }
-  });
-});
-
-// Rota dinâmica para abrir qualquer página .html
-app.get('/:pagina.html', (req, res) => {
-  const pagina = decodeURIComponent(req.params.pagina);
-  res.sendFile(path.join(caminhoFrontend, `${pagina}.html`), (err) => {
-    if (err) {
-      res.status(404).send('Página não encontrada');
-    }
-  });
-});
 
 // Rota POST para receber o relato do formulário e enviar por e-mail
 app.post('/api/relato', async (req, res) => {
@@ -140,21 +98,13 @@ app.post('/api/relato', async (req, res) => {
     return res.status(200).json({ success: true, mensagem: 'Relato enviado com sucesso.' });
 
   } catch (error) {
-    console.error('❌ Erro crítico no servidor:', error);
-    return.status(500).json({ 
+    console.error('❌ Erro no envio do e-mail:', error);
+    return res.status(500).json({ 
       success: false, 
       mensagem: 'Erro interno ao enviar o e-mail.', 
       detalhes: error.message || 'Erro desconhecido' 
     });
   }
-});
-
-// Fallback de rota para servir o index.html em rotas do frontend
-app.get('*', (req, res, next) => {
-  if (req.url.includes('.')) {
-    return next();
-  }
-  res.sendFile(path.join(caminhoFrontend, 'index.html'));
 });
 
 // Inicia o servidor localmente se não estiver no ambiente Vercel
